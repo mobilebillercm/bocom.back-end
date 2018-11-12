@@ -18,3 +18,4 @@ class Service extends Model
         $this->logo=$logo;
     }
 }
+
