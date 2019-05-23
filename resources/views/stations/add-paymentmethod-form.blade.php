@@ -177,6 +177,11 @@
                             .information-account{
 
                             }
+
+                            .popover {
+                                max-width: 600px;
+                                width: 600px;
+                            }
                         </style>
 
 
@@ -196,7 +201,12 @@
                                                 <span class="login100-form-title p-b-34 p-t-27" style="color: #0F8334;">
                                                     Ajouter une Methode de Paiement
                                                 </span>
-                                                <h4>A {{$station->name}}</h4>
+                                                <h4 style="display: inline" id="station_name">A {{$station->name}}</h4>
+                                                <span class="pull-right">
+                                                    <a href="#" id="link_create_new_payment_method"
+                                                       data-toggle="popover" title="CREER UNE METHODE DE PAIEMENT">
+                                                        <i class="fa fa-plus"></i> Creer une nouvelle Methode</a>
+                                                </span>
                                                     <br><br>
                                                     @csrf
                                                     @if(session('message') and session('message')['result']['success'] === 1 and session('message')['result']['faillure'] === 0)
@@ -258,11 +268,84 @@
 
                                             </form>
 
+
+
                                         </div>
+
+
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <div id="create-payment-method-form" style="display: none; width: 100%; max-width: 600px;">
+                            <div class="row" >
+                                <div class="col-md-12">
+                                    <form action="{{url('/paymentmethods')}}" method="post" enctype="multipart/form-data">
+                                        @csrf
+                                        <span class="login100-form-logo">
+						                            <i class="fa fa-plus"></i>
+					                            </span>
+
+                                        <div class="row">
+
+                                            <div class="col-md-12">
+                                                <div cclass="form-group" style="text-align: left;">
+                                                    <label for="type" style="font-size: 16px;">Type de Methode de Paiement<b style="color: red;" class=""> *</b></label>
+                                                    <select class="form-control form-control-text" required name="type" id="type"
+                                                            style="color: #0d0d0d;" >
+                                                        <option value="">--- Choisir un type de Methode ---</option>
+                                                        @foreach($paymentmethodtypes as $paymentmethodtype)
+                                                            <option value="{{$paymentmethodtype->paymentmethodetypeid}}">{{$paymentmethodtype->name}}</option>
+                                                        @endforeach
+                                                    </select> <br>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div cclass="form-group" style="text-align: left;">
+                                                    <label for="name" style="font-size: 16px;">Designation<b style="color: red;" class=""> *</b></label>
+                                                    <input type="text" class="form-control form-control-text" required id="name" name="name" placeholder="Nom de la methode de paiement"> <br>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div cclass="form-group" style="text-align: left;">
+                                                    <label for="description" style="font-size: 16px;">Description<b style="color: red;" class=""> *</b></label>
+                                                    <textarea type="email" class="form-control form-control-text" required name="description" id="description"
+                                                              placeholder="Description du Service"
+                                                              style="color: #0d0d0d;" ></textarea> <br>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div cclass="form-group" style="text-align: left;">
+                                                    <label for="issuer" style="font-size: 16px;">Emetteur<b style="color: red;" class=""> </b></label>
+                                                    <input type="text" class="form-control form-control-text" required id="issuer" name="issuer" placeholder="Ex: Visa, Orange, MTN etc."> <br>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-12">
+                                                <div cclass="form-group" style="text-align: left;">
+                                                    <label for="logo" style="font-size: 16px;">Logo<b style="color: red;" class=""> *</b></label>
+                                                    <input type="file" class="form-control form-control-text" required name="logo" id="logo"
+                                                           placeholder="Logo du Service"
+                                                           style="color: #0d0d0d;" /> <br>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="container-login100-form-btn">
+                                            <button class="login100-form-btn-blue" type="submit">
+                                                Ajouter
+                                            </button>
+                                        </div>
+
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
                         <div id="dropDownSelect1"></div>
                     </div>
                 </div>

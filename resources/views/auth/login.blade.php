@@ -196,6 +196,13 @@
                                                         Connexion
                                                     </span>
                                                 @csrf
+
+                                                @if(isset($message) and !($message === null))
+                                                    <div class="alert-success">{{$message}}</div>
+                                                @endif
+                                                @if(isset($reconfigurepwdmessage) and !($reconfigurepwdmessage === null))
+                                                    <div class="alert-success">{{$reconfigurepwdmessage}}</div>
+                                                @endif
                                                 @if(session('message') and session('message')['result']['success'] === 1 and session('message')['result']['faillure'] === 0)
                                                     <div class="alert-success">{{session('message')['result']['response']}}</div>
                                                 @else
@@ -246,7 +253,14 @@
                                                                    style="color: #0d0d0d;" /> <br>
                                                         </div>
                                                     </div>
+
+                                                    <div class="col-md-12">
+                                                        <div cclass="form-group" style="text-align: left;">
+                                                            <a href="{{url('/recover')}}">Mot de passe oublie?</a> <br>
+                                                        </div>
+                                                    </div>
                                                 </div>
+
 
                                                 <br><br>
 

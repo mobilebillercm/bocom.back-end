@@ -1,5 +1,9 @@
 <?php
 
+if (strpos($_SERVER['REQUEST_URI'], '/favicon.ico') !== false){
+    exit('');
+}
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *

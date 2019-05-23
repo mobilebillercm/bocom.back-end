@@ -288,7 +288,26 @@
                                                                    placeholder="Quartier de la Station"
                                                                    style="color: #0d0d0d;" /> <br>
                                                         </div>
+							<input type="hidden" name="latitude" value="4.07334615">
+                                                        <input type="hidden" name="longitude" value="9.71682954217252">
                                                     </div>
+
+                                                    {{--<div class="col-md-6">
+                                                        <div cclass="form-group" style="text-align: left;">
+                                                            <label for="latitude" style="font-size: 16px;">Latitude</label>
+                                                            <input type="number" class="form-control form-control-text"  name="latitude" id="latitude"
+                                                                   placeholder="Latitude" step="any"
+                                                                   style="color: #0d0d0d;" /> <br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div cclass="form-group" style="text-align: left;">
+                                                            <label for="longitude" style="font-size: 16px;">Longitude</label>
+                                                            <input type="number" class="form-control form-control-text"  name="longitude" id="longitude"
+                                                                   placeholder="Longitude" step="any"
+                                                                   style="color: #0d0d0d;" /> <br>
+                                                        </div>
+                                                    </div>--}}
 
                                                 </div>
 

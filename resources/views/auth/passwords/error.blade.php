@@ -185,71 +185,13 @@
 
                             <br><br><br>
 
-
-                            <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
-                                <div class="btn-group" role="group">
-                                    <button type="button" id="stars" class="btn btn-info btn-lg active tab-btn" href="#tab1" data-toggle="tab">
-                                        <div class="hidden-xs" style="font-size: x-large;">Produits Petroliers <span class="glyphicon glyphicon-star" aria-hidden="true"></span></div>
-                                    </button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" id="favorites" class="btn btn-info btn-lg tab-btn" href="#tab2" data-toggle="tab">
-                                        <div class="hidden-xs" style="font-size: x-large;">Lubrifiants <span class="glyphicon glyphicon-heart" aria-hidden="true"></span></div>
-                                    </button>
-                                </div>
+                            <div class="col-md-12 alert-danger">
+                                <h4>Something Went Wrong !!!</h4>
+                                {{$message}}
                             </div>
 
-                            <div class="well">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade in active" id="tab1">
-                                        <form action="{{url('nouveau-produit-petrolier')}}" method="get" class="pull-right">
-                                            <button class="login100-form-btn-blue pull-right" type="submit" style="margin-top: -10px;">
-                                                <i class="fa fa-plus"></i> &nbsp;&nbsp;Nouveau Produit Petrolier
-                                            </button>
-                                        </form>
-                                        <br><br>
 
-                                        <ul class="list-group menu-transaction" style="width: 100%;">
-                                            @foreach($produitpetroliers as $produitpetrolier)
-                                                <li class="list-group-item row">
-                                                    <div class="col-md-2">
-                                                        <img src="{{url('/produitpetroliers/'. $produitpetrolier->petroleumproductid.'/logo')}}"/>
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <h3>{{$produitpetrolier->name}}</h3>
-                                                        <h5>{{$produitpetrolier->petroleumproductid}}</h5>
-                                                        <span style="font-size: small;">{{$produitpetrolier->description}}</span>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
 
-                                    </div>
-                                    <div class="tab-pane fade in" id="tab2">
-                                        <form action="{{url('nouveau-produit-lubrifiant')}}" method="get" class="pull-right">
-                                            <button class="login100-form-btn-blue pull-right" type="submit" style="margin-top: -10px;">
-                                                <i class="fa fa-plus"></i> &nbsp;&nbsp;Nouveau Lubrifiant
-                                            </button>
-                                        </form>
-                                        <br><br>
-
-                                        <ul class="list-group menu-transaction" style="width: 100%;">
-                                            @foreach($lubrifiants as $lubrifiant)
-                                                <li class="list-group-item row">
-                                                    <div class="col-md-2">
-                                                        <img src="{{url('/lubrifiants/'. $lubrifiant->lubrifiantid.'/logo')}}"/>
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <h3>{{$lubrifiant->name}}</h3>
-                                                        <h5>{{$lubrifiant->lubrifiantid}}</h5>
-                                                        <span style="font-size: small;">{{$lubrifiant->description}}</span>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
 
                         </div>
                         <div id="dropDownSelect1"></div>

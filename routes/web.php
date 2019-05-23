@@ -12,6 +12,8 @@
 */
 
 Route::get('/', 'FreeController@home');
+Route::get('/regle-utilisation-bocom-mobile', 'FreeController@regle_utilisation_bocom_mobile');
+
 Route::get('register', function (){
     return view('auth.register');
 });
@@ -89,6 +91,18 @@ Route::post('stations/{id}/add-services', 'HomeController@addServiceToStation');
 Route::get('stations-paymentmethods/{id}/add-paymentmethods', 'HomeController@addPaymentmethodToStationForm');
 
 Route::post('stations/{id}/add-paymentmethods', 'HomeController@addPaymentmethodToStation');
+
+Route::post('paymentmethods', 'HomeController@createPaymentMethod');
+
+Route::get('recover', 'FreeController@recoverForm');
+Route::post('recover', 'FreeController@recover');
+
+Route::get('reset-password/{id}', 'FreeController@resetForm');
+Route::post('reset-password/{id}', 'FreeController@reset');
+
+Route::get('change-password/{id}', 'HomeController@changePasswordForm');
+Route::post('change-password/{id}', 'HomeController@changePassword');
+
 //paymentmethods
 //Auth::routes();
 

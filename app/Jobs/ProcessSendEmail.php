@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Mail\RegisterMail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,17 +13,17 @@ class ProcessSendEmail implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $email, $registerMailable;
+    public $email, $mailable;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(string $email, RegisterMail $registerMailable)
+    public function __construct(string $email,  $mailable)
     {
         $this->email = $email;
-        $this->registerMailable = $registerMailable;
+        $this->mailable = $mailable;
     }
 
     /**
@@ -34,6 +33,6 @@ class ProcessSendEmail implements ShouldQueue
      */
     public function handle()
     {
-        Mail::to($this->email)->send($this->registerMailable);
+        Mail::to($this->email)->send($this->mailable);
     }
 }

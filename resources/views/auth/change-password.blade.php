@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'BOCOM Petroleum sa/Home')
+@section('title', 'BOCOM Petroleum sa/Login')
 @section('commonsection')
     <div class="overlay"></div>
     <div class="container">
@@ -182,75 +182,100 @@
 
 
                         <div class="row">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-6">
+                                <div class="">
+                                    <div class="" style="color: #0F8334; border-radius: 8px;">
+                                        <div class="" style="width: 100%; padding: 15px; border-radius: 8px;">
+                                            <form class="form-style-9" method="post" action="{{url('change-password/'.\Illuminate\Support\Facades\Auth::user()->userid)}}" id="form-topup">
+                                                <span class="login100-form-logo">
+						                            <i class="fa fa-gear"></i>
+					                            </span>
+                                                <span class="login100-form-title p-b-34 p-t-27" style="color: #0F8334;">
+                                                        Changer le Mot de passe
+                                                    <h5>{{\Illuminate\Support\Facades\Auth::user()->firstname . ' ' . \Illuminate\Support\Facades\Auth::user()->lastname}}</h5>
+                                                    <h5>{{\Illuminate\Support\Facades\Auth::user()->email}}</h5>
+                                                    </span>
 
-                            <br><br><br>
+                                                @csrf
+                                                @if(session('message') and session('message')['result']['success'] === 1 and session('message')['result']['faillure'] === 0)
+                                                    <div class="alert-success">{{session('message')['result']['response']}}</div>
+                                                @else
+                                                    @if(session('message') and session('message')['result']['success'] === 0 and session('message')['result']['faillure'] === 1)
+                                                        <?php
+                                                        $jsonObj = json_decode(session('message')['result']['raison'], true);
+                                                        ?>
+                                                        <div class="alert-danger">
+                                                            <ul class="list-group">
+                                                                <?php
+                                                                //echo  var_dump($jsonObj); exit();
+                                                                if ($jsonObj == null or is_string($jsonObj)) {
+                                                                    echo '<li class="list-group-item">' . session('message')['result']['raison'] . '</li>';
+                                                                } else {
+                                                                foreach ($jsonObj as $key => $value) {
+                                                                ?>
+
+                                                                <li class="list-group-item">{{$value[0]}}</li>
+                                                                <?php
+                                                                }
+                                                                }
+                                                                ?>
+                                                            </ul>
+                                                        </div>
+                                                        <?php
+                                                        ?>
+                                                    @else
+                                                        <div class="alert-danger">{{session('message')['result']['raison']}}</div>
+                                                    @endif
+                                                @endif
 
 
-                            <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
-                                <div class="btn-group" role="group">
-                                    <button type="button" id="stars" class="btn btn-info btn-lg active tab-btn" href="#tab1" data-toggle="tab">
-                                        <div class="hidden-xs" style="font-size: x-large;">Produits Petroliers <span class="glyphicon glyphicon-star" aria-hidden="true"></span></div>
-                                    </button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" id="favorites" class="btn btn-info btn-lg tab-btn" href="#tab2" data-toggle="tab">
-                                        <div class="hidden-xs" style="font-size: x-large;">Lubrifiants <span class="glyphicon glyphicon-heart" aria-hidden="true"></span></div>
-                                    </button>
+                                                <div class="row">
+
+                                                    <div class="col-md-12">
+                                                        <div cclass="form-group" style="text-align: left;">
+                                                            <label for="oldpassword" style="font-size: 16px;">Mot de Passe Courrant<b style="color: red;" class="">*</b></label>
+                                                            <input type="password" class="form-control form-control-text" required name="oldpassword" id="oldpassword"
+                                                                   placeholder="Mot de passe dont vous voulez changer"
+                                                                   style="color: #0d0d0d;" /> <br>
+                                                            <input type="hidden" name="userid" value="{{\Illuminate\Support\Facades\Auth::user()->userid}}">
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-12">
+                                                        <div cclass="form-group" style="text-align: left;">
+                                                            <label for="newpassword" style="font-size: 16px;">Nouveau Mot de Passe<b style="color: red;" class="">*</b></label>
+                                                            <input type="password" class="form-control form-control-text" required name="newpassword" id="newpassword"
+                                                                   placeholder="Nouveau Mot de passe"
+                                                                   style="color: #0d0d0d;" /> <br>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div cclass="form-group" style="text-align: left;">
+                                                            <label for="newpasswordconfirmation" style="font-size: 16px;">Confirmer le Nouveau Mot de Passe<b style="color: red;" class=""> *</b></label>
+                                                            <input type="password" class="form-control form-control-text" required name="newpasswordconfirmation" id="newpasswordconfirmation"
+                                                                   placeholder="Confirmer le Nouveau Mot de passe"
+                                                                   style="color: #0d0d0d;" /> <br>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                <br><br>
+
+                                                <div class="container-login100-form-btn">
+                                                    <button class="login100-form-btn-blue" type="submit">
+                                                        Changer
+                                                    </button>
+                                                </div>
+
+                                            </form>
+
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div class="well">
-                                <div class="tab-content">
-                                    <div class="tab-pane fade in active" id="tab1">
-                                        <form action="{{url('nouveau-produit-petrolier')}}" method="get" class="pull-right">
-                                            <button class="login100-form-btn-blue pull-right" type="submit" style="margin-top: -10px;">
-                                                <i class="fa fa-plus"></i> &nbsp;&nbsp;Nouveau Produit Petrolier
-                                            </button>
-                                        </form>
-                                        <br><br>
-
-                                        <ul class="list-group menu-transaction" style="width: 100%;">
-                                            @foreach($produitpetroliers as $produitpetrolier)
-                                                <li class="list-group-item row">
-                                                    <div class="col-md-2">
-                                                        <img src="{{url('/produitpetroliers/'. $produitpetrolier->petroleumproductid.'/logo')}}"/>
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <h3>{{$produitpetrolier->name}}</h3>
-                                                        <h5>{{$produitpetrolier->petroleumproductid}}</h5>
-                                                        <span style="font-size: small;">{{$produitpetrolier->description}}</span>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-
-                                    </div>
-                                    <div class="tab-pane fade in" id="tab2">
-                                        <form action="{{url('nouveau-produit-lubrifiant')}}" method="get" class="pull-right">
-                                            <button class="login100-form-btn-blue pull-right" type="submit" style="margin-top: -10px;">
-                                                <i class="fa fa-plus"></i> &nbsp;&nbsp;Nouveau Lubrifiant
-                                            </button>
-                                        </form>
-                                        <br><br>
-
-                                        <ul class="list-group menu-transaction" style="width: 100%;">
-                                            @foreach($lubrifiants as $lubrifiant)
-                                                <li class="list-group-item row">
-                                                    <div class="col-md-2">
-                                                        <img src="{{url('/lubrifiants/'. $lubrifiant->lubrifiantid.'/logo')}}"/>
-                                                    </div>
-                                                    <div class="col-md-10">
-                                                        <h3>{{$lubrifiant->name}}</h3>
-                                                        <h5>{{$lubrifiant->lubrifiantid}}</h5>
-                                                        <span style="font-size: small;">{{$lubrifiant->description}}</span>
-                                                    </div>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                         <div id="dropDownSelect1"></div>
                     </div>

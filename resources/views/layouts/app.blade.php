@@ -144,6 +144,11 @@
         input[type=range]:focus::-ms-fill-upper {
             background: #0F8334;
         }
+        .dropdown-menu {
+            margin-top: 0px;
+            width: 300px !important;
+            height: 400px !important;
+        }
     </style>
 </head>
 
@@ -199,11 +204,27 @@
                                  &nbsp;&nbsp;&nbsp;<strong style="font-size: large; color: #0F8334;">|</strong> &nbsp;&nbsp;&nbsp;&nbsp;
                             </span>
                         @else
-                            <span class="pull-right"><span class="">
+
+
+                            <div class="dropdown show pull-right">
+                                <a  href="#"  id="configmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                                   style="color: #0F8334; font-weight: bold; font-size: medium;">
+                                    <i class="fa fa-gear"></i> Parametrage
+                                </a>
+
+                                <div class="dropdown-menu" aria-labelledby="configmenu">
+                                    <a class="dropdown-item" href="{{url('change-password')}}/{{\Illuminate\Support\Facades\Auth::user()->userid}}" style="text-align: center; margin-left: 10px;">Changer Le mot de passe</a>
+
+                                </div>
+                            </div>
+
+
+                            <span class="pull-right" style="margin-right: 20px;"><span class="">
                                 <a href="{{url('logout')}}" style="color: #0F8334; font-weight: bold; font-size: medium;">
                                     <i class="fa fa-sign-out"></i> &nbsp;&nbsp;Se Deconnecter
                                 </a>
                             </span>
+                                <strong style="font-size: large; color: #0F8334;">&nbsp;&nbsp;&nbsp;|</strong> &nbsp;
                                 </span>
 
                             <span class="pull-right"><span class="">
@@ -983,6 +1004,25 @@
                 $(this).html((index+1));
         });
     }
+
+
+    $('.tab-btn').click(function () {
+        //alert('ok');
+        $('.tab-btn').removeClass('active');
+        $(this).addClass('active');
+    });
+
+
+    $(function () {
+        $('#link_create_new_payment_method').popover({
+            container: 'body',
+            html: true,
+            content: function () {
+                return $('#create-payment-method-form').html();
+            }
+        })
+    });
+
 
 
 </script>

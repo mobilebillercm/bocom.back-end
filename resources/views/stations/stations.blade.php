@@ -188,7 +188,7 @@
 
                             <div class="btn-pref btn-group btn-group-justified btn-group-lg" role="group" aria-label="...">
                                 <div class="btn-group" role="group">
-                                    <button type="button" id="stars" class="btn btn-info btn-lg" href="#tab1" data-toggle="tab">
+                                    <button type="button" id="stars" class="btn btn-info btn-lg tab-btn" href="#tab1" data-toggle="tab">
                                         <div class="hidden-xs" style="font-size: x-large;">STATIONS <span class="glyphicon glyphicon-star" aria-hidden="true"></span></div>
                                     </button>
                                 </div>
@@ -215,8 +215,8 @@
                                                         <img src="{{url('/station/'. $station->stationid.'/image0')}}"/>
                                                     </div>
                                                     <div class="col-md-10">
-                                                        <h3>{{$station->name}}</h3>
-                                                        <h5>{{$station->stationid}}</h5>
+                                                        <h5>{{$station->name}}</h5>
+                                                        <h6>{{$station->stationid}}</h6>
                                                         <span style="font-size: small;">{{$station->description}}</span>
                                                     </div>
                                                     <div class="col-md-12">

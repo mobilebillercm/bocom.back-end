@@ -9,15 +9,16 @@ use App\PaymentMthodeType;
 use App\PetroleumProduct;
 use App\Service;
 use App\Station;
+use App\User;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Webpatser\Uuid\Uuid;
 
 class HomeController extends Controller
@@ -27,9 +28,11 @@ class HomeController extends Controller
      *
      * @return void
      */
+    private $apiController;
     public function __construct()
     {
         $this->middleware('auth');
+        $this->apiController = new ApiController();
     }
 
     /**
@@ -52,6 +55,61 @@ class HomeController extends Controller
     public function nouveauProduitPetrolierForm(Request $request){
         return view('products.petroleum.form');
     }
+
+    public function changePasswordForm(Request $request, $userid){
+        return view('auth.change-password');
+    }
+
+    public function changePassword(Request $request, $userid){
+
+        $validator = Validator::make($request->all(),
+            [
+                'oldpassword' => 'required|string|min:6',
+                'newpassword' => 'required|string|min:6',
+                'newpasswordconfirmation' => 'required|string|min:6',
+
+            ]
+        );
+
+        if ($validator->fails()) {
+            return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+                'result'=>array('raison'=>$validator->errors()->first(), 'success'=>0, 'faillure'=>1)));
+        }
+
+        $oldpassword = $request->get('oldpassword');
+        $newpassword = $request->get('newpassword');
+        $newpasswordconfirmation = $request->get('newpasswordconfirmation');
+
+        $users = User::where('userid', '=', $userid)->get();
+        if (!(count($users) === 1)){
+            return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+                'result'=>array('raison'=>"Utilisateur non present dans le system.", 'success'=>0, 'faillure'=>1)));
+            //return response(array('success' => 0, 'faillure' => 1, 'raison' => "Utilisateur non present dans le system."), 200);
+        }
+
+        $user = $users[0];
+        $credentials = ['email'=>$user->email, 'password'=>$oldpassword];
+            // attempt to verify the credentials and create a token for the user
+            if (! Auth::attempt($credentials)) {
+                return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+                    'result'=>array('raison'=>"Echec d'authentification.", 'success'=>0, 'faillure'=>1)));
+                //return response(array('success' => 0, 'faillure' => 1, 'raison' => "Echec d'authentification."), 200);
+            }
+
+
+        if (!($newpassword === $newpasswordconfirmation)){
+            return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+                'result'=>array('raison'=>"Le nouveau mot de passe et sa confirmation sont distincts.", 'success'=>0, 'faillure'=>1)));
+            //return response(array('success' => 0, 'faillure' => 1, 'raison' => "Le nouveau mot de passe et sa confirmation sont distincts."), 200);
+        }
+
+        $user->password = Hash::make($newpassword);
+        $user->save();
+        return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+            'result'=>array('response'=>"Mot de passe modifie avec succes.", 'success'=>1, 'faillure'=>0)));
+        //return response(array('success' => 1, 'faillure' => 0, 'response' => "Mot de passe modifie avec succes.", 'token'=>$token), 200);
+    }
+
 
     public function nouveauProduitPetrolier(Request $request){
 
@@ -290,8 +348,8 @@ class HomeController extends Controller
 
 
         $station = new Station(Uuid::generate()->string,$request->get('name'), $request->get('description'),
-            $request->get('region'), $request->get('division'), $request->get('subdivision'), $request->get('quarter'),null,
-            null,$request->get('bp'), '[]','[]', '[]', '[]', '[]','[]');
+            $request->get('region'), $request->get('division'), $request->get('subdivision'), $request->get('quarter'), $request->get('latitude'),
+            $request->get('longitude'),$request->get('bp'), '[]','[]', '[]', '[]', '[]','[]');
         $station->save();
 
         return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
@@ -310,10 +368,13 @@ class HomeController extends Controller
         }
 
         $images = json_decode($stations[0]->images);
+        if (count($images) === 0){
+            return response()->make(null, 200, array(
+                'Content-Type' => (new \finfo(FILEINFO_MIME))->buffer(null)
+            ));
+        }
         $contents = Storage::disk('local')->get($images[0]);
-        return response()->make($contents, 200, array(
-            'Content-Type' => (new \finfo(FILEINFO_MIME))->buffer($contents)
-        ));
+        return response()->make($contents, 200, array('Content-Type' => (new \finfo(FILEINFO_MIME))->buffer($contents)));
 
     }
 
@@ -590,6 +651,54 @@ class HomeController extends Controller
             }
         }
         return view('stations.add-paymentmethod-form', array('station'=>$stations[0], 'paymentmethods'=>$paymentmethods, 'paymentmethodtypes'=>PaymentMthodeType::all()));
+    }
+
+    public function createPaymentMethod(Request $request){
+
+        //return $request;
+
+        $validator = Validator::make(
+            $request->all(),
+            array(
+                'name'=>'required|string|max:250',
+                'type'=>'required|string|max:150',
+                'description'=>'required|string',
+                'logo'=>'required|file|mimes:jpeg,png,jpg,gif',
+            )
+        );
+
+        if ($validator->fails()){
+            return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+                'result'=>array('raison'=>$validator->errors()->first(), 'success'=>0, 'faillure'=>1)));
+        }
+
+        $name = strtolower($request->get('name'));
+
+        $paymentMethods = PaymentMethode::whereRaw('LOWER(`name`) = ?', [$name])->get();
+        if (count($paymentMethods) > 0){
+            return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+                'result'=>array('raison'=>'Une Methode de paiement avec le meme nom existe deja dans le syteme', 'success'=>0, 'faillure'=>1)));
+        }
+
+        $logo = $request->file('logo');
+        $logo_path = null;
+        if (!($logo === null) and $logo->isValid()) {
+            $logo_path = Storage::disk('local')->put('paymentmethod', $logo);
+        }
+
+        $paymentMethodTypes = PaymentMthodeType::where('paymentmethodetypeid', '=', $request->get('type'))->get();
+        if (!(count($paymentMethodTypes) === 1)){
+            return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+                'result'=>array('raison'=>'Type de methode de paiement non existant dans le systeme.', 'success'=>0, 'faillure'=>1)));
+        }
+
+        $paymentMethod = new PaymentMethode(Uuid::generate()->string,$request->get('name'),
+            $request->get('description'), $request->get('issuer'), $logo_path, $paymentMethodTypes[0]->paymentmethodetypeid, $paymentMethodTypes[0]->name,
+            $paymentMethodTypes[0]->description);
+        $paymentMethod->save();
+
+        return Redirect::back()->with('message',array('receiveResultStatusCode' => 200,
+            'result'=>array('response'=>'Methode de paiement creee avec succes !!!', 'success'=>1, 'faillure'=>0)));
     }
 
     public function addPaymentmethodToStation(Request $request, $stationid){
